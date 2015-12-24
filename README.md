@@ -1,2 +1,2 @@
 # TrackMe
-Event tracking jQuery plugin... work in progress!
+Events tracking jQuery plugin... work in progress!
