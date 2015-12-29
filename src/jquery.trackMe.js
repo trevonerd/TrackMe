@@ -1,5 +1,5 @@
 /*!
- * jQuery TrackMe v1.0 - 23/12/2015
+ * jQuery TrackMe v1.1 - 29/12/2015
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments: 
@@ -21,8 +21,8 @@
 
     // - Private Functions - - -
     var formIsValid = function (formId) {
-        if (typeof (formId) !== 'undefined') {
-            var $formToValidate = $('#' + formId);
+        if (typeof (formId) !== "undefined") {
+            var $formToValidate = $("#" + formId);
             if ($formToValidate.length && !$formToValidate.valid()) {
                 return false;
             }
@@ -31,22 +31,39 @@
     };
 
     // ( Debug Layer )
-    var debugTrackedEvent = function (category, action, label) {
-
-        var $message = $("<h3>").html('New Event:').after($("<p>").html("<b>Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />")),
-            $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
-
-        if (!$(".track-event-notification-layer").length) {
-            $messageContainer.append($message);
-            $('body').append($messageContainer);
-        } else {
-            clearTimeout(window.closeDebugLayerTimeout);
-            $(".track-event-notification-layer").append($message).removeClass("fade-out").addClass("fade-in");
+    var onlineOrStageEnvironment = function () {
+        if (document.location.hostname.match("yoox.com$")) {
+            return true;
         }
+        return false;
+    },
+    checkQueryString = function () {
+        if (location.search.match("td=1$")) {
+            return true;
+        }
+        return false;
+    },
+    debugTrackedEvent = function (category, action, label) {
+        if (!onlineOrStageEnvironment() && checkQueryString()) {
+            var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
+                messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
+                $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
+                $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
 
-        window.closeDebugLayerTimeout = setTimeout(function () {
-            $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
-        }, 3000);
+            if (!$(".track-event-notification-layer").length) {
+                $messageContainer.append($message);
+                $("body").append($messageContainer);
+            } else {
+                clearTimeout(window.closeDebugLayerTimeout);
+                $(".track-event-notification-layer").append($message).removeClass("fade-out").addClass("fade-in");
+            }
+
+            window.closeDebugLayerTimeout = setTimeout(function () {
+                $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
+            }, 3000);
+
+            console.log(messageText);
+        }
     };
 
     // - Public Functions - - -
@@ -69,20 +86,20 @@
         // Bind events that trigger methods
         bindEvents: function () {
             var plugin = this;
-            plugin.$element.on('click' + '.' + plugin._name, '.js-track-me', function () {
+            plugin.$element.on("click" + "." + plugin._name, ".js-track-me", function () {
                 plugin.startTracking.call(plugin, $(this));
             });
         },
 
         // Unbind events that trigger methods
         unbindEvents: function () {
-            this.$element.off('.' + this._name);
+            this.$element.off("." + this._name);
         },
 
         getTrackingData: function ($elm) {
             return {
-                category: (typeof ($elm.data("trackingCategory")) === "undefined") ? this.customTrackingData.category : $elm.data("trackingCategory"),
-                action: (typeof ($elm.data("trackingAction")) === "undefined") ? this.customTrackingData.action : $elm.data("trackingAction"),
+                category: (typeof (this.customTrackingData.category) === "undefined") ? $elm.data("trackingCategory") : this.customTrackingData.category,
+                action: (typeof (this.customTrackingData.action) === "undefined") ? $elm.data("trackingAction") : this.customTrackingData.action,
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
@@ -96,30 +113,30 @@
             this.trackingData = this.getTrackingData($element);
 
             // Track checkbox events
-            if ($element.is('input[type=checkbox]') && typeof (plugin.trackingData.labelChecked) !== 'undefined') {
-                var label = $element.is(':checked') ? plugin.trackingData.labelChecked : plugin.trackingData.labelNotChecked;
+            if ($element.is("input[type=checkbox]") && typeof (plugin.trackingData.labelChecked) !== "undefined") {
+                var label = $element.is(":checked") ? plugin.trackingData.labelChecked : plugin.trackingData.labelNotChecked;
 
-                if (typeof (plugin.trackingData.event) === 'undefined' && label !== 'undefined') {
-                    plugin.trackUserEvents(plugin.trackingData.category, plugin.trackingData.action, label);
+                if (typeof (plugin.trackingData.event) === "undefined" && label !== "undefined") {
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, label);
                 } else {
-                    $('body').off(plugin.trackingData.event).one(plugin.trackingData.event, function () {
-                        plugin.trackUserEvents(jsInit.analytics.category, plugin.trackingData.action, label);
+                    $("body").off(plugin.trackingData.event).one(plugin.trackingData.event, function () {
+                        plugin.trackUserEvent(jsInit.analytics.category, plugin.trackingData.action, label);
                     });
                 }
 
                 // Track only if form is valid
-            } else if (typeof (plugin.trackingData.formToValidate) !== 'undefined') {
+            } else if (typeof (plugin.trackingData.formToValidate) !== "undefined") {
                 if (formIsValid(plugin.trackingData.formToValidate)) {
-                    plugin.trackUserEvents(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
                 }
 
                 // Track on custom event
             } else {
-                if (typeof (plugin.trackingData.event) === 'undefined') {
-                    plugin.trackUserEvents(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
+                if (typeof (plugin.trackingData.event) === "undefined") {
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
                 } else {
-                    $('body').off(plugin.trackingData.event).one(plugin.trackingData.event, function () {
-                        plugin.trackUserEvents(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
+                    $("body").off(plugin.trackingData.event).one(plugin.trackingData.event, function () {
+                        plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
                     });
                 }
             }
@@ -135,13 +152,13 @@
             this.customTrackingData.action = action;
         },
 
-        trackUserEvents: function (category, action, label) {
+        trackUserEvent: function (category, action, label) {
             if (typeof (label) !== "undefined" && typeof (action) !== "undefined") {
-                $Y.track.userEvent('ga', { category: category, action: action, label: label });
-            }
+                $Y.track.userEvent("ga", { category: category, action: action, label: label });
 
-            if (this.options.debug) {
-                debugTrackedEvent(category, action, label);
+                if (this.options.debug) {
+                    debugTrackedEvent(category, action, label);
+                }
             }
         },
 
@@ -149,7 +166,7 @@
             // Cache onComplete option
             var onComplete = this.options.onComplete;
 
-            if (typeof onComplete === 'function') {
+            if (typeof onComplete === "function") {
                 onComplete.call(this.element);
             }
         },
@@ -181,8 +198,16 @@
     };
 
     $.fn.trackMe.defaults = {
-        debug: 'false',
+        debug: false,
         onComplete: function () { }
+    };
+
+    $.fn.triggerDelayed = function (event, delay) {
+        delay = delay || 50;
+        var element = $(this);
+        setTimeout(function () {
+            element.trigger(event);
+        }, delay);
     };
 
 })(jQuery, window, document);
