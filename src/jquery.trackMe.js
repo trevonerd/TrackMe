@@ -98,8 +98,8 @@
 
         getTrackingData: function ($elm) {
             return {
-                category: this.customTrackingData.category === "" ? $elm.data("trackingCategory") : this.customTrackingData.category,
-                action: this.customTrackingData.action === "" ? $elm.data("trackingAction") : this.customTrackingData.action,
+                category: typeof ($elm.data("trackingCategory")) === "undefined" ? this.customTrackingData.category : $elm.data("trackingCategory"),
+                action: typeof ($elm.data("trackingAction")) === "undefined" ? this.customTrackingData.action : $elm.data("trackingAction"),
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
