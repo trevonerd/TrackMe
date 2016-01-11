@@ -1,8 +1,8 @@
 /*!
- * jQuery TrackMe v1.1 - 29/12/2015
+ * jQuery TrackMe v1.2 - 11/01/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
- * Further changes, comments: 
+ * Further changes, comments:
  * Licensed under the MIT license
  */
 ; (function ($, window, document) {
@@ -98,8 +98,8 @@
 
         getTrackingData: function ($elm) {
             return {
-                category: (typeof (this.customTrackingData.category) === "undefined") ? $elm.data("trackingCategory") : this.customTrackingData.category,
-                action: (typeof (this.customTrackingData.action) === "undefined") ? $elm.data("trackingAction") : this.customTrackingData.action,
+                category: this.customTrackingData.category === "" ? $elm.data("trackingCategory") : this.customTrackingData.category,
+                action: this.customTrackingData.action === "" ? $elm.data("trackingAction") : this.customTrackingData.action,
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
