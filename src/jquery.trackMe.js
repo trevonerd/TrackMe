@@ -32,39 +32,39 @@
 
     // ( Debug Layer )
     var onlineOrStageEnvironment = function () {
-        if (document.location.hostname.match("yoox.com$")) {
-            return true;
-        }
-        return false;
-    },
-    checkQueryString = function () {
-        if (location.search.match("td=1$")) {
-            return true;
-        }
-        return false;
-    },
-    debugTrackedEvent = function (category, action, label) {
-        if (!onlineOrStageEnvironment() && checkQueryString()) {
-            var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
-                messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
-                $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
-                $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
-
-            if (!$(".track-event-notification-layer").length) {
-                $messageContainer.append($message);
-                $("body").append($messageContainer);
-            } else {
-                clearTimeout(window.closeDebugLayerTimeout);
-                $(".track-event-notification-layer").append($message).removeClass("fade-out").addClass("fade-in");
+            if (document.location.hostname.match("yoox.com$")) {
+                return true;
             }
+            return false;
+        },
+        checkQueryString = function () {
+            if (location.search.match("td=1$")) {
+                return true;
+            }
+            return false;
+        },
+        debugTrackedEvent = function (category, action, label) {
+            if (!onlineOrStageEnvironment() && checkQueryString()) {
+                var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
+                    messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
+                    $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
+                    $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
 
-            window.closeDebugLayerTimeout = setTimeout(function () {
-                $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
-            }, 3000);
+                if (!$(".track-event-notification-layer").length) {
+                    $messageContainer.append($message);
+                    $("body").append($messageContainer);
+                } else {
+                    clearTimeout(window.closeDebugLayerTimeout);
+                    $(".track-event-notification-layer").append($message).removeClass("fade-out").addClass("fade-in");
+                }
 
-            console.log(messageText);
-        }
-    };
+                window.closeDebugLayerTimeout = setTimeout(function () {
+                    $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
+                }, 3000);
+
+                console.log(messageText);
+            }
+        };
 
     // - Public Functions - - -
     $.extend(TrackMe.prototype, {
@@ -150,6 +150,14 @@
 
         setTrackingAction: function (action) {
             this.customTrackingData.action = action;
+        },
+
+        getCurrentTrackingCategory: function () {
+            return this.customTrackingData.category;
+        },
+
+        getCurrentTrackingAction: function () {
+            return this.customTrackingData.action;
         },
 
         trackUserEvent: function (category, action, label) {
