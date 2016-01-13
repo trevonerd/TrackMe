@@ -89,6 +89,11 @@
             plugin.$element.on("click" + "." + plugin._name, ".js-track-me", function () {
                 plugin.startTracking.call(plugin, $(this));
             });
+			
+            plugin.$element.on("hover" + "." + plugin._name, ".js-track-me-hover", function () {
+                plugin.startTracking.call(plugin, $(this));
+            });
+			
         },
 
         // Unbind events that trigger methods
