@@ -1,11 +1,11 @@
 /*!
- * jQuery TrackMe v1.3 - 14/01/2016
+ * jQuery TrackMe v1.4 - 22/01/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
  * Licensed under the MIT license
  */
-; (function ($, window, document) {
+;(function ($, window, document) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -32,11 +32,11 @@
 
     // ( Debug Layer )
     var onlineOrStageEnvironment = function () {
-            if (document.location.hostname.match("yoox.com$")) {
-                return true;
-            }
-            return false;
-        },
+        if (document.location.hostname.match("yoox.com$")) {
+            return true;
+        }
+        return false;
+    },
         checkQueryString = function () {
             if (location.search.match("td=1$")) {
                 return true;
@@ -86,14 +86,14 @@
         // Bind events that trigger methods
         bindEvents: function () {
             var plugin = this;
+
             plugin.$element.on("click" + "." + plugin._name, ".js-track-me", function () {
                 plugin.startTracking.call(plugin, $(this));
             });
-			
+
             plugin.$element.on("hover" + "." + plugin._name, ".js-track-me-hover", function () {
                 plugin.startTracking.call(plugin, $(this));
             });
-			
         },
 
         // Unbind events that trigger methods
@@ -103,8 +103,8 @@
 
         getTrackingData: function ($elm) {
             return {
-                category: typeof ($elm.data("trackingCategory")) === "undefined" ? this.customTrackingData.category : $elm.data("trackingCategory"),
-                action: typeof ($elm.data("trackingAction")) === "undefined" ? this.customTrackingData.action : $elm.data("trackingAction"),
+                category: typeof ($elm.data("trackingCategory")) === "undefined" ? this.options.category : $elm.data("trackingCategory"),
+                action: typeof ($elm.data("trackingAction")) === "undefined" ? this.options.action : $elm.data("trackingAction"),
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
@@ -150,19 +150,19 @@
         },
 
         setTrackingCategory: function (category) {
-            this.customTrackingData.category = category;
+            this.options.category = category;
         },
 
         setTrackingAction: function (action) {
-            this.customTrackingData.action = action;
+            this.options.action = action;
         },
 
         getCurrentTrackingCategory: function () {
-            return this.customTrackingData.category;
+            return this.options.category;
         },
 
         getCurrentTrackingAction: function () {
-            return this.customTrackingData.action;
+            return this.options.action;
         },
 
         trackUserEvent: function (category, action, label) {
@@ -192,11 +192,6 @@
             labelNotChecked: "",
             event: "",
             formToValidate: ""
-        },
-
-        customTrackingData: {
-            category: "",
-            action: ""
         }
     });
 
@@ -212,6 +207,8 @@
 
     $.fn.trackMe.defaults = {
         debug: false,
+        category: "",
+        action: "",
         onComplete: function () { }
     };
 
