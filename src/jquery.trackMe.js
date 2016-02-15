@@ -156,6 +156,10 @@
         setTrackingAction: function (action) {
             this.options.action = action;
         },
+		
+        updateTrackingData: function(updatedTrackingData) {
+            $.extend(true, this.trackingData, updatedTrackingData);
+        },		
 
         getCurrentTrackingCategory: function () {
             return this.options.category;
