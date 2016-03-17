@@ -1,5 +1,5 @@
 /*!
- * jQuery TrackMe v1.4 - 22/01/2016
+ * jQuery TrackMe v1.5 - 17/03/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
@@ -38,10 +38,11 @@
         return false;
     },
         checkQueryString = function () {
-            if (location.search.match("td=1$")) {
-                return true;
-            }
-            return false;
+            //if (location.search.match("td=1$")) {
+            //    return true;
+            //}
+            //return false;
+            return true;
         },
         debugTrackedEvent = function (category, action, label) {
             if (!onlineOrStageEnvironment() && checkQueryString()) {
@@ -112,6 +113,8 @@
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
+                labelOn: $elm.data("trackingLabelOn"),
+                labelOff: $elm.data("trackingLabelOff"),
                 event: $elm.data("trackingEvent"),
                 formToValidate: $elm.data("trackingFormId")
             };
@@ -132,7 +135,15 @@
                         plugin.trackUserEvent(jsInit.analytics.category, plugin.trackingData.action, label);
                     });
                 }
-
+                // Track switch events
+            } else if (typeof (plugin.trackingData.labelOn) !== "undefined" || typeof (plugin.trackingData.labelOff) !== "undefined") {
+                if ($element.hasClass("js-track-me-on")) {
+                    $element.removeClass("js-track-me-on");
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.labelOff);
+                } else {
+                    $element.addClass("js-track-me-on");
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.labelOn);
+                }
                 // Track only if form is valid
             } else if (typeof (plugin.trackingData.formToValidate) !== "undefined") {
                 if (formIsValid(plugin.trackingData.formToValidate)) {
@@ -160,10 +171,10 @@
         setTrackingAction: function (action) {
             this.options.action = action;
         },
-		
-        updateTrackingData: function(updatedTrackingData) {
+
+        updateTrackingData: function (updatedTrackingData) {
             $.extend(true, this.trackingData, updatedTrackingData);
-        },		
+        },
 
         getCurrentTrackingCategory: function () {
             return this.options.category;
@@ -174,12 +185,12 @@
         },
 
         trackUserEvent: function (category, action, label) {
-            if (typeof (label) !== "undefined" && typeof (action) !== "undefined") {
-                $Y.track.userEvent("ga", { category: category, action: action, label: label });
-
+            if (typeof (label) !== "undefined" && typeof (action) !== "undefined" && label !== "" && action !== "") {
                 if (this.options.debug) {
                     debugTrackedEvent(category, action, label);
                 }
+
+                $Y.track.userEvent("ga", { category: category, action: action, label: label });
             }
         },
 
@@ -198,6 +209,8 @@
             label: "",
             labelChecked: "",
             labelNotChecked: "",
+            labelOn: "",
+            labelOff: "",
             event: "",
             formToValidate: ""
         }
@@ -214,7 +227,7 @@
     };
 
     $.fn.trackMe.defaults = {
-        debug: false,
+        debug: false, // true: activate the event notification layer
         category: "",
         action: "",
         onComplete: function () { }
