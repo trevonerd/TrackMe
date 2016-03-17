@@ -21,6 +21,7 @@
 @media (max-width: 736px) {
     .track-event-notification-layer {
         width: 100%;
+        bottom: 0;
     }
 }
 
