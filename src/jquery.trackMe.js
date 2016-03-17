@@ -61,9 +61,9 @@
 
                 window.closeDebugLayerTimeout = setTimeout(function () {
                     $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out");
-                    setTimeout(function () {
+                    window.closeDebugLayerTimeout = setTimeout(function () {
                         $(".track-event-notification-layer").html("");
-                    }, 1000);
+                    }, 200);
                 }, 3500);
 
                 console.log(messageText);
