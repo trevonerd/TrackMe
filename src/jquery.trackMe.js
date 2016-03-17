@@ -1,11 +1,11 @@
 /*!
- * jQuery TrackMe v1.5 - 17/03/2016
+ * jQuery TrackMe v1.6 - 17/03/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
  * Licensed under the MIT license
  */
-;(function ($, window, document) {
+; (function ($, window, document) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -47,7 +47,7 @@
         debugTrackedEvent = function (category, action, label) {
             if (!onlineOrStageEnvironment() && checkQueryString()) {
                 var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
-                    messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
+                    messageHtml = "<b>Category:</b> " + category + " <b> - Action:</b> " + action + " <b> - Label:</b> " + label + "<br />",
                     $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
                     $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
 
@@ -60,8 +60,11 @@
                 }
 
                 window.closeDebugLayerTimeout = setTimeout(function () {
-                    $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
-                }, 3000);
+                    $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out");
+                    setTimeout(function () {
+                        $(".track-event-notification-layer").html("");
+                    }, 1000);
+                }, 3500);
 
                 console.log(messageText);
             }
@@ -227,7 +230,7 @@
     };
 
     $.fn.trackMe.defaults = {
-        debug: false, // true: activate the event notification layer
+        debug: true, // true: activate the event notification layer
         category: "",
         action: "",
         onComplete: function () { }
