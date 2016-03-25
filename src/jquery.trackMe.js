@@ -1,11 +1,13 @@
 /*!
- * jQuery TrackMe v1.6 - 17/03/2016
+ * jQuery TrackMe v2 - 25/03/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
+ * - added form tracking
+ *
  * Licensed under the MIT license
  */
-; (function ($, window, document) {
+;(function ($, window, document) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -47,7 +49,7 @@
         debugTrackedEvent = function (category, action, label) {
             if (!onlineOrStageEnvironment() && checkQueryString()) {
                 var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
-                    messageHtml = "<b>Category:</b> " + category + " <b> - Action:</b> " + action + " <b> - Label:</b> " + label + "<br />",
+                    messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
                     $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
                     $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
 
@@ -60,11 +62,8 @@
                 }
 
                 window.closeDebugLayerTimeout = setTimeout(function () {
-                    $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out");
-                    window.closeDebugLayerTimeout = setTimeout(function () {
-                        $(".track-event-notification-layer").html("");
-                    }, 200);
-                }, 3500);
+                    $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
+                }, 3000);
 
                 console.log(messageText);
             }
@@ -102,6 +101,13 @@
             plugin.$element.on("focus" + "." + plugin._name, ".js-track-me-focus", function () {
                 plugin.startTracking.call(plugin, $(this));
             });
+
+            plugin.$element.on("blur" + "." + plugin._name, ".js-track-form input:not([type=submit])", function (event) {
+                // track only REQUIRED input not already tracked.
+                if (!$(this).data("alreadyTracked") && typeof ($(this).data("valRequired")) !== 'undefined') {
+                    plugin.startTrackingForm.call(plugin, $(this));
+                }
+            });
         },
 
         // Unbind events that trigger methods
@@ -123,6 +129,15 @@
             };
         },
 
+        getFormTrackingData: function ($elm) {
+            var $form = $elm.closest('form');
+            return {
+                category: typeof ($form.data("trackingCategory")) === "undefined" ? this.options.category : $form.data("trackingCategory"),
+                action: typeof ($form.data("trackingAction")) === "undefined" ? this.options.action : $form.data("trackingAction"),
+                label: $form.data("trackingFormName")
+            };
+        },
+
         startTracking: function ($element) {
             var plugin = this;
             this.trackingData = this.getTrackingData($element);
@@ -135,7 +150,7 @@
                     plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, label);
                 } else {
                     $("body").off(plugin.trackingData.event).one(plugin.trackingData.event, function () {
-                        plugin.trackUserEvent(jsInit.analytics.category, plugin.trackingData.action, label);
+                        plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, label);
                     });
                 }
                 // Track switch events
@@ -162,6 +177,26 @@
                         plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label);
                     });
                 }
+            }
+
+            this.callback();
+        },
+
+        startTrackingForm: function ($element) {
+            var plugin = this;
+            this.trackingData = this.getFormTrackingData($element);
+
+            if ($element.val().length === 0) {
+                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelSkipped + " " + $element.attr('name'));
+            } else if (!$element.valid()) {
+                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelNotValid + " " + $element.attr('name'));
+            } else {
+                if (this.options.formTracking.completedEvents) {
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelCompleted + " " + $element.attr('name'));
+                }
+            }
+            if (this.options.formTracking.oneTimeOnly) {
+                $element.data("alreadyTracked", true);
             }
 
             this.callback();
@@ -231,6 +266,13 @@
 
     $.fn.trackMe.defaults = {
         debug: true, // true: activate the event notification layer
+        formTracking: {
+            completedEvents: false,
+            oneTimeOnly: true,
+            labelCompleted: "completed",
+            labelNotValid: "not valid",
+            labelSkipped: "skipped"
+        },
         category: "",
         action: "",
         onComplete: function () { }
