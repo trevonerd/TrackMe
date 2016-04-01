@@ -1,5 +1,5 @@
 /*!
- * jQuery TrackMe v2.1 - 01/04/2016
+ * jQuery TrackMe v2.1.0 - 01/04/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
