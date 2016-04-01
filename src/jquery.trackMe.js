@@ -1,5 +1,5 @@
 /*!
- * jQuery TrackMe v2 - 25/03/2016
+ * jQuery TrackMe v2.1 - 01/04/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
@@ -7,7 +7,7 @@
  *
  * Licensed under the MIT license
  */
-;(function ($, window, document) {
+; (function ($, window, document) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -34,11 +34,11 @@
 
     // ( Debug Layer )
     var onlineOrStageEnvironment = function () {
-        if (document.location.hostname.match("yoox.com$")) {
-            return true;
-        }
-        return false;
-    },
+            if (document.location.hostname.match("yoox.com$") || document.location.hostname.match("yoox.cn$")) {
+                return true;
+            }
+            return false;
+        },
         checkQueryString = function () {
             //if (location.search.match("td=1$")) {
             //    return true;
@@ -102,7 +102,7 @@
                 plugin.startTracking.call(plugin, $(this));
             });
 
-            plugin.$element.on("blur" + "." + plugin._name, ".js-track-form input:not([type=submit])", function (event) {
+            plugin.$element.on("blur" + "." + plugin._name, ".js-track-form input:not([type=submit]), .js-track-form select", function (event) {
                 // track only REQUIRED input not already tracked.
                 if (!$(this).data("alreadyTracked") && typeof ($(this).data("valRequired")) !== 'undefined') {
                     plugin.startTrackingForm.call(plugin, $(this));
@@ -134,7 +134,8 @@
             return {
                 category: typeof ($form.data("trackingCategory")) === "undefined" ? this.options.category : $form.data("trackingCategory"),
                 action: typeof ($form.data("trackingAction")) === "undefined" ? this.options.action : $form.data("trackingAction"),
-                label: $form.data("trackingFormName")
+                label: $form.data("trackingFormName"),
+                fieldName: typeof ($elm.data("trackingName")) === "undefined" ? $elm.attr('name') : $elm.data("trackingName")
             };
         },
 
@@ -187,12 +188,12 @@
             this.trackingData = this.getFormTrackingData($element);
 
             if ($element.val().length === 0) {
-                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelSkipped + " " + $element.attr('name'));
+                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + plugin.options.formTracking.labelSkipped + " " + plugin.trackingData.fieldName);
             } else if (!$element.valid()) {
-                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelNotValid + " " + $element.attr('name'));
+                plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + plugin.options.formTracking.labelNotValid + " " + plugin.trackingData.fieldName);
             } else {
                 if (this.options.formTracking.completedEvents) {
-                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + this.options.formTracking.labelCompleted + " " + $element.attr('name'));
+                    plugin.trackUserEvent(plugin.trackingData.category, plugin.trackingData.action, plugin.trackingData.label + " " + plugin.options.formTracking.labelCompleted + " " + plugin.trackingData.fieldName);
                 }
             }
             if (this.options.formTracking.oneTimeOnly) {
@@ -265,7 +266,7 @@
     };
 
     $.fn.trackMe.defaults = {
-        debug: true, // true: activate the event notification layer
+        debug: false, // true: activate the event notification layer
         formTracking: {
             completedEvents: false,
             oneTimeOnly: true,
