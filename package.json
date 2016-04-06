@@ -1,0 +1,28 @@
+{
+  "name": "trackme",
+  "version": "1.0.0",
+  "description": "Events tracking jQuery plugin... work in progress!",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-jsdoc": "^1.1.0",
+    "ink-docstrap": "^1.1.4",
+    "jshint-stylish": "^2.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://trevonerd@github.com/trevonerd/TrackMe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trevonerd/TrackMe/issues"
+  },
+  "homepage": "https://github.com/trevonerd/TrackMe#readme"
+}

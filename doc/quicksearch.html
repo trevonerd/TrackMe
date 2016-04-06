@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body style="background: transparent;">
+    <script src="scripts/docstrap.lib.js"></script>
+    <script src="scripts/lunr.min.js"></script>
+    <script src="scripts/fulltext-search.js"></script>
+
+    <script type="text/x-docstrap-searchdb">
+    {"global.html":{"id":"global.html","title":"Global","body":" TrackMe Classes trackMetriggerDelayed Global defaults Global Members defaults Properties: Name Type Description options object The default plugin options. Properties Name Type Description debug boolean Debug mode with console.log and in-page notification layer. formTracking object The default options for the form tracking feature. Properties Name Type Description completedEvents boolean Track the successful completion of the fields. oneTimeOnly boolean Track the field event only the first time. labelCompleted string The default label for the completed event. labelNotValid string The default label for the not valid event. labelSkipped string The default label for the skipped event. category string The default global tracking category name. action string The default global tracking action name. callback callback The default callback called after tracking event. Example $(selector).trackMe({ debug: false, formTracking { completedEvents: false, oneTimeOnly: true, labelCompleted: &quot;completed&quot;, labelNotValid: &quot;not valid&quot;, labelSkipped: &quot;skipped&quot; }, category: &quot;cart&quot;, action: &quot;&quot;, callback: function() { console.log(&quot;Event tracked.&quot;); }; }); × Search results Close "},"classes.list.html":{"id":"classes.list.html","title":"Classes","body":" TrackMe Classes trackMetriggerDelayed Global defaults Classes Classes trackMe triggerDelayed × Search results Close "},"index.html":{"id":"index.html","title":"Index","body":" TrackMe Classes trackMetriggerDelayed Global defaults TrackMejQuery TrackMe v2.1.1 - 06/04/2016Original author: Marco Trevisani (marco.trevisani@ynap.com) Events tracking jQuery plugin... work in progress! × Search results Close "},"trackMe.html":{"id":"trackMe.html","title":"Class: trackMe","body":" TrackMe Classes trackMetriggerDelayed Global defaults Class: trackMe trackMe new trackMe(options) Start the magic! Attach the event tracking on elements with specific classes. Available custom classes: js-track-me {any element} - track event on click. js-track-me-hover: {any element} - track event on mouseover. js-track-me-focus: {any element} - track event on focus. js-track-me-form: {form} - track user behavior during filling of the form. Parameters: Name Type Argument Description options Object &lt;optional&gt; The plugin options. Properties Name Type Argument Default Description debug boolean &lt;optional&gt; false Debug mode with console.log and in-page notification layer. formTracking Object &lt;optional&gt; Options for the form tracking feature. Properties Name Type Argument Default Description completedEvents boolean &lt;optional&gt; false Track the successful completion of the fields. oneTimeOnly boolean &lt;optional&gt; true Track the field event only the first time. labelCompleted string &lt;optional&gt; completed Label for the completed event. labelNotValid string &lt;optional&gt; not valid Label for the not valid event. labelSkipped string &lt;optional&gt; skipped Label for the skipped event. category string &lt;optional&gt; The global tracking category name. action string &lt;optional&gt; The global tracking action name. callback callback &lt;optional&gt; The default callback called after tracking event. Version: 2.1.1 Author: Marco Trevisani License: MIT license See: global Returns: jQuery Example $(selector).trackMe(); Methods &lt;static&gt; getCurrentTrackingAction() Get current global tracking action Returns: Current global tracking action Type string Example $(selector).data(&quot;plugin_trackMe&quot;).getCurrentTrackingAction(); &lt;static&gt; getCurrentTrackingCategory() Get current global tracking category Returns: Current global tracking category Type string Example $(selector).data(&quot;plugin_trackMe&quot;).getCurrentTrackingCategory(); &lt;static&gt; setTrackingAction(action) Set global tracking action Parameters: Name Type Description action string Action name. Example $(selector).data(&quot;plugin_trackMe&quot;).setTrackingAction(&quot;delivery page&quot;); &lt;static&gt; setTrackingCategory(category) Set global tracking category Parameters: Name Type Description category string Category name. Example $(selector).data(&quot;plugin_trackMe&quot;).setTrackingCategory(&quot;cart&quot;); &lt;static&gt; trackUserEvent(category, action, label) Track custom user event Parameters: Name Type Description category string Event category. action string Event action. label string Event label. Example var trackMe = $(&quot;body&quot;).data(&quot;plugin_trackMe&quot;); trackMe.trackUserEvent(&quot;userbar&quot;, &quot;login&quot;, &quot;facebook&quot;); × Search results Close "},"triggerDelayed.html":{"id":"triggerDelayed.html","title":"Class: triggerDelayed","body":" TrackMe Classes trackMetriggerDelayed Global defaults Class: triggerDelayed triggerDelayed new triggerDelayed(event, delay) Trigger an event with a custom delay. Parameters: Name Type Argument Default Description event string the event name to trigger. delay number &lt;optional&gt; 50 the delay in ms to wait before triggering. Example $(selector).triggerDelayed(&quot;ITEM_ADDED&quot;, 100); × Search results Close "}}
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            Searcher.init();
+        });
+
+        $(window).on("message", function(msg) {
+            var msgData = msg.originalEvent.data;
+
+            if (msgData.msgid != "docstrap.quicksearch.start") {
+                return;
+            }
+
+            var results = Searcher.search(msgData.searchTerms);
+
+            window.parent.postMessage({"results": results, "msgid": "docstrap.quicksearch.done"}, "*");
+        });
+    </script>
+</body>
+</html>

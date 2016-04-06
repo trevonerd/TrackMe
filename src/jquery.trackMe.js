@@ -1,13 +1,33 @@
-/*!
- * jQuery TrackMe v2.1.0 - 01/04/2016
+/**
+ * ___________                     __      _____
+ * \__    ___/___________    ____ |  | __ /     \   ____
+ *   |    |  \_  __ \__  \ _/ ___\|  |/ //  \ /  \_/ __ \
+ *   |    |   |  | \// __ \\  \___|    </    Y    \  ___/
+ *   |____|   |__|  (____  /\___  >__|_ \____|__  /\___  >
+ *                       \/     \/     \/       \/     \/
+ *
+ *
+ * jQuery TrackMe v2.1.1 - 06/04/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
- * - added form tracking
+ * - added jsdoc comments
  *
  * Licensed under the MIT license
+ *
+ * @name $
+ * @class
+ * @ignore
+ * @description This just documents the method that is added to jQuery by this plugin.
+ * See <a href="http://jquery.com/">the jQuery library</a> for full details.
  */
-; (function ($, window, document) {
+/**
+ * @name $.fn
+ * @memberof $
+ * @description This just documents the method that is added to jQuery by this plugin.
+ * See <a href="http://jquery.com/">the jQuery library</a> for full details.
+ */
+;(function ($, window, document) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -22,6 +42,9 @@
     }
 
     // - Private Functions - - -
+    /**
+     * @private
+     */
     var formIsValid = function (formId) {
         if (typeof (formId) !== "undefined") {
             var $formToValidate = $("#" + formId);
@@ -33,6 +56,9 @@
     };
 
     // ( Debug Layer )
+    /**
+     * @private
+     */
     var onlineOrStageEnvironment = function () {
             if (document.location.hostname.match("yoox.com$") || document.location.hostname.match("yoox.cn$")) {
                 return true;
@@ -51,7 +77,7 @@
                 var messageText = "[EVENT] --------------------\nCategory: " + category + "\nAction: " + action + "\nLabel: " + label + "\n----------------------------",
                     messageHtml = "Category:</b> " + category + " <br /> <b>Action:</b> " + action + " <br /> <b>Label:</b> " + label + "<br />",
                     $message = $("<h3>").html("New Event:").after($("<p>").html(messageHtml)),
-                    $messageContainer = $("<div>", { "class": "track-event-notification-layer fade-in" });
+                    $messageContainer = $("<div>", {"class": "track-event-notification-layer fade-in"});
 
                 if (!$(".track-event-notification-layer").length) {
                     $messageContainer.append($message);
@@ -71,11 +97,18 @@
 
     // - Public Functions - - -
     $.extend(TrackMe.prototype, {
-        // Initialization logic
+        /**
+         * Initialization logic
+         * @ignore
+         * @function
+         * @memberof trackMe
+         * @example $(selector).trackMe();
+         */
         init: function () {
             this.buildCache();
             this.bindEvents();
         },
+
         destroy: function () {
             this.unbindEvents();
             this.$element.removeData();
@@ -87,6 +120,7 @@
         },
 
         // Bind events that trigger methods
+
         bindEvents: function () {
             var plugin = this;
 
@@ -203,10 +237,26 @@
             this.callback();
         },
 
+        /**
+         * Set global tracking category
+         * @method
+         * @param {string} category - Category name.
+         * @memberof trackMe
+         * @example
+         * $(selector).data("plugin_trackMe").setTrackingCategory("cart");
+         */
         setTrackingCategory: function (category) {
             this.options.category = category;
         },
 
+        /**
+         * Set global tracking action
+         * @method
+         * @param {string} action - Action name.
+         * @memberof trackMe
+         * @example
+         * $(selector).data("plugin_trackMe").setTrackingAction("delivery page");
+         */
         setTrackingAction: function (action) {
             this.options.action = action;
         },
@@ -215,21 +265,48 @@
             $.extend(true, this.trackingData, updatedTrackingData);
         },
 
+        /**
+         * Get current global tracking category
+         * @method
+         * @return {string} Current global tracking category
+         * @memberof trackMe
+         * @example
+         * $(selector).data("plugin_trackMe").getCurrentTrackingCategory();
+         */
         getCurrentTrackingCategory: function () {
             return this.options.category;
         },
 
+        /**
+         * Get current global tracking action
+         * @method
+         * @return {string} Current global tracking action
+         * @memberof trackMe
+         * @example
+         * $(selector).data("plugin_trackMe").getCurrentTrackingAction();
+         */
         getCurrentTrackingAction: function () {
             return this.options.action;
         },
 
+        /**
+         * Track custom user event
+         * @method
+         * @param {string} category - Event category.
+         * @param {string} action - Event action.
+         * @param {string} label - Event label.
+         * @memberof trackMe
+         * @example
+         * var trackMe = $("body").data("plugin_trackMe");
+         * trackMe.trackUserEvent("userbar", "login", "facebook");
+         */
         trackUserEvent: function (category, action, label) {
             if (typeof (label) !== "undefined" && typeof (action) !== "undefined" && label !== "" && action !== "") {
                 if (this.options.debug) {
                     debugTrackedEvent(category, action, label);
                 }
 
-                $Y.track.userEvent("ga", { category: category, action: action, label: label });
+                $Y.track.userEvent("ga", {category: category, action: action, label: label});
             }
         },
 
@@ -255,6 +332,37 @@
         }
     });
 
+    /**
+     * Start the magic! Attach the event tracking on elements with specific classes.<br />
+     * <br />
+     * Available custom classes:<br />
+     * <b>js-track-me</b>          {any element} - track event on click.<br />
+     * <b>js-track-me-hover:</b>   {any element} - track event on mouseover.<br />
+     * <b>js-track-me-focus:</b>   {any element} - track event on focus.<br />
+     * <b>js-track-me-form:</b>    {form} - track user behavior during filling of the form.<br />
+     *
+     * @param {Object}  [options] - The plugin options.
+     * @param {boolean} [options.debug=false] - Debug mode with console.log and in-page notification layer.
+     * @param {Object}  [options.formTracking] - Options for the form tracking feature.
+     * @param {boolean} [options.formTracking.completedEvents=false] - Track the successful completion of the fields.
+     * @param {boolean} [options.formTracking.oneTimeOnly=true] - Track the field event only the first time.
+     * @param {string}  [options.formTracking.labelCompleted=completed] - Label for the completed event.
+     * @param {string}  [options.formTracking.labelNotValid=not valid] - Label for the not valid event.
+     * @param {string}  [options.formTracking.labelSkipped=skipped] - Label for the skipped event.
+     * @param {string}  [options.category] - The global tracking category name.
+     * @param {string}  [options.action] - The global tracking action name.
+     * @param {callback} [options.callback] - The default callback called after tracking event.
+     * @returns jQuery
+     * @name trackMe
+     * @class
+     * @version 2.1.1
+     * @date 6 Apr 2016
+     * @author Marco Trevisani
+     * @license MIT license
+     * @see global
+     * @example
+     * $(selector).trackMe();
+     */
     $.fn.trackMe = function (options) {
         this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
@@ -265,6 +373,37 @@
         return this;
     };
 
+    /**
+     * @name defaults
+     * @default
+     * @example
+     * $(selector).trackMe({
+     *       debug: false,
+     *       formTracking {
+     *           completedEvents: false,
+     *           oneTimeOnly: true,
+     *           labelCompleted: "completed",
+     *           labelNotValid: "not valid",
+     *           labelSkipped: "skipped"
+     *       },
+     *       category: "cart",
+     *       action: "",
+     *       callback: function() {
+     *          console.log("Event tracked.");
+     *       };
+     * });
+     * @property {object}   options - The default plugin options.
+     * @property {boolean}  options.debug - Debug mode with console.log and in-page notification layer.
+     * @property {object}   options.formTracking - The default options for the form tracking feature.
+     * @property {boolean}  options.formTracking.completedEvents - Track the successful completion of the fields.
+     * @property {boolean}  options.formTracking.oneTimeOnly - Track the field event only the first time.
+     * @property {string}   options.formTracking.labelCompleted - The default label for the completed event.
+     * @property {string}   options.formTracking.labelNotValid - The default label for the not valid event.
+     * @property {string}   options.formTracking.labelSkipped - The default label for the skipped event.
+     * @property {string}   options.category - The default global tracking category name.
+     * @property {string}   options.action - The default global tracking action name.
+     * @property {callback} options.callback - The default callback called after tracking event.
+     */
     $.fn.trackMe.defaults = {
         debug: false, // true: activate the event notification layer
         formTracking: {
@@ -276,9 +415,18 @@
         },
         category: "",
         action: "",
-        onComplete: function () { }
+        onComplete: function () {
+        }
     };
 
+    /**
+     * Trigger an event with a custom delay.
+     * @class triggerDelayed
+     * @param {string} event - the event name to trigger.
+     * @param {number} [delay=50] - the delay in ms to wait before triggering.
+     * @example
+     * $(selector).triggerDelayed("ITEM_ADDED", 100);
+     */
     $.fn.triggerDelayed = function (event, delay) {
         delay = delay || 50;
         var element = $(this);
