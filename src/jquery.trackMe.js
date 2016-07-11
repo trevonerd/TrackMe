@@ -354,7 +354,7 @@
             return this.options.action;
         },
         managePlaceholder: function (text) {
-            var myRegexp = /#([a-zA-Z0-9]*)#/g,
+            var myRegexp = /{{([a-zA-Z0-9]*)}}/g,
                 result = text.match(myRegexp),
                 placeholderText,
                 i;
