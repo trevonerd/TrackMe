@@ -7,10 +7,12 @@
  *                       \/     \/     \/       \/     \/
  *
  *
- * jQuery TrackMe v2.1.3 - 08/07/2016
+ * jQuery TrackMe v2.1.4 - 12/07/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
+ * --- v2.14:
+ * - added no follow links feature.
  * --- v2.1.3:
  * - added placeholder feature for labels.
  * --- v2.1.2:
@@ -169,7 +171,11 @@
 
             plugin.$element.on("click" + "." + plugin._name,
                 ".js-track-me",
-                function () {
+                function (e) {
+                    if (plugin.options.debugNoFollowLinks) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
                     plugin.startTracking.call(plugin, $(this));
                 });
 
@@ -431,6 +437,7 @@
 
     $.fn.trackMe.defaults = {
         debug: false, // true: activate the event notification layer
+        debugNoFollowLinks: false // true: stop propagation on click,
         formTracking: {
             completedEvents: false,
             oneTimeOnly: true,
