@@ -1,6 +1,7 @@
 # TrackMe
-jQuery TrackMe v2.1.1 - 06/04/2016
+jQuery TrackMe 2.1.6 - 18/07/2016
 --------------------------------
 Original author: Marco Trevisani (marco.trevisani@ynap.com)
+Contributors: Luca Bencivenni (luca.bencivenni@ynap)
 
-> Events tracking jQuery plugin... work in progress!
+> Super easy GA events tracking jQuery plugin for yoox.com.
