@@ -7,10 +7,12 @@
  *                       \/     \/     \/       \/     \/
  *
  *
- * jQuery TrackMe v2.1.6 - 18/07/2016
+ * jQuery TrackMe v2.1.7 - 02/08/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
+ * --- v2.17:
+ * - now you can grab the action from another element using the data attribute: "data-tracking-action-from-id"
  * --- v2.16:
  * - added tracking on selects (on change).
  * - added tracking on radios (add class js-track-me-container to the radios container).
@@ -48,6 +50,7 @@
  * data-tracking-label-not-checked      - {checkbox only} this is the event label when the checkbox isn't checked.
  * data-tracking-label-on               - {element with a switch functionality} Set the event label when the switch is on. (es: accordion open, option turned on...).
  * data-tracking-label-off              - {element with a switch functionality} Set the event label when the switch is off. (es: accordion closed, option turned off...).
+ * data-tracking-action-from-id         - Get the tracking action data attribute from this element.
  *
  **** Initialisation Options:
  *      $(selector).trackMe({
@@ -99,6 +102,11 @@
             var $formToValidate = $("#" + formId);
             if ($formToValidate.length && !$formToValidate.valid()) {
                 return false;
+            }
+            if ($("#Privacy").length > 0 || $("#privacy").length > 0) {
+                if ($Y.privacyManager && !$Y.privacyManager.isValid()) {
+                    return false;
+                }
             }
         }
         return true;
@@ -229,18 +237,25 @@
         },
 
         getTrackingData: function ($elm) {
+            var $actionTargetElm = $elm;
+            var customActionTargetElement = $elm.data("tracking-action-from-id");
+            if (customActionTargetElement !== undefined) {
+                $actionTargetElm = $(customActionTargetElement);
+            }
+
             return {
                 category: ($elm.data("trackingCategory")) === undefined
                     ? this.options.category
                     : $elm.data("trackingCategory"),
-                action: ($elm.data("trackingAction")) === undefined ? this.options.action : $elm.data("trackingAction"),
+                action: ($actionTargetElm.data("trackingAction")) === undefined ? this.options.action : $actionTargetElm.data("trackingAction"),
                 label: $elm.data("trackingLabel"),
                 labelChecked: $elm.data("trackingLabelChecked"),
                 labelNotChecked: $elm.data("trackingLabelNotChecked"),
                 labelOn: $elm.data("trackingLabelOn"),
                 labelOff: $elm.data("trackingLabelOff"),
                 event: $elm.data("trackingEvent"),
-                formToValidate: $elm.data("trackingFormId")
+                formToValidate: $elm.data("trackingFormId"),
+                getActionFrom: $elm.data("tracking-action-from-id")
             };
         },
         getSelectTrackingData: function ($elm) {
