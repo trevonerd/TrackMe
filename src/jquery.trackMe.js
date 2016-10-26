@@ -7,21 +7,24 @@
  *                       \/     \/     \/       \/     \/
  *
  *
- * jQuery TrackMe v2.1.8 - 10/08/2016
+ * jQuery TrackMe v2.1.9 - 10/08/2016
  * --------------------------------
  * Original author: Marco Trevisani (marco.trevisani@ynap.com)
  * Further changes, comments:
- * --- v2.18:
+ * --- v2.1.9:
+ * - added custom tracking classes (click, hover, keyup, focus)!
+ *   Now we can use more instance of the plugin on different parent with different category.
+ * --- v2.1.8:
  * - fix event tracking!
  * - refactoring tracking functions.
- * --- v2.17:
+ * --- v2.1.7:
  * - now you can grab the action from another element using the data attribute: "data-tracking-action-from-id"
- * --- v2.16:
+ * --- v2.1.6:
  * - added tracking on selects (on change).
  * - added tracking on radios (add class js-track-me-container to the radios container).
- * --- v2.15:
+ * --- v2.1.5:
  * - added tracking on keyup event.
- * --- v2.14:
+ * --- v2.1.4:
  * - added no follow links feature.
  * --- v2.1.3:
  * - added placeholder feature for labels.
@@ -188,7 +191,7 @@
                 var plugin = this;
 
                 plugin.$element.on("click" + "." + plugin._name,
-                    ".js-track-me",
+                    plugin.options.trackingClickClass,
                     function (e) {
                         if (plugin.options.debugNoFollowLinks) {
                             e.preventDefault();
@@ -198,13 +201,13 @@
                     });
 
                 plugin.$element.on("hover" + "." + plugin._name,
-                    ".js-track-me-hover",
+                    plugin.options.trackingHoverClass,
                     function () {
                         plugin.startTracking.call(plugin, $(this));
                     });
 
                 plugin.$element.on("keyup" + "." + plugin._name,
-                    ".js-track-me-keyup",
+                    plugin.options.trackingKeyupClass,
                     function () {
                         // track only REQUIRED input not already tracked.
                         if (!$(this).data("alreadyTracked")) {
@@ -213,7 +216,7 @@
                     });
 
                 plugin.$element.on("focus" + "." + plugin._name,
-                    ".js-track-me-focus",
+                    plugin.options.trackingFocusClass,
                     function () {
                         plugin.startTracking.call(plugin, $(this));
                     });
@@ -586,6 +589,10 @@
             labelNotValid: "not valid",
             labelSkipped: "skipped"
         },
+        trackingClickClass: ".js-track-me",
+        trackingHoverClass: ".js-track-me-hover",
+        trackingKeyupClass: ".js-track-me-keyup",
+        trackingFocusClass: ".js-track-me-focus",
         category: "",
         action: "",
         placeholders: {},
