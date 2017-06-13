@@ -76,7 +76,7 @@
  **** Usage Example:
  *
  *  JS: $(selector).trackMe();
- *  HTML: <a class="link js-track-me" href="a_beautiful_link" data-tracking-category="myoox" data-tracking-action="home" data-tracking-label="banner">Click Me!</a>
+ *  HTML: <a class="link js-track-me" href="a_beautiful_link" data-tracking-category="category" data-tracking-action="action" data-tracking-label="label">Click Me!</a>
  *
  **** More Examples:
  *
@@ -87,8 +87,7 @@
  *      $(selector).data("plugin_trackMe").setTrackingAction("custom global action");
  *
  */
-;
-(function ($, window, document) {
+(function ($, window) {
     "use strict";
 
     var pluginName = "trackMe";
@@ -119,29 +118,15 @@
     };
 
     // ( Debug Layer )
-    var onlineOrStageEnvironment = function () {
-            if (document.location.hostname.match("yoox.com$") || document.location.hostname.match("yoox.cn$")) {
+    var checkQueryString = function () {
+            if (location.search.match("trackme=1$")) {
                 return true;
             }
             return false;
         },
-        checkQueryString = function () {
-            //if (location.search.match("td=1$")) {
-            //    return true;
-            //}
-            //return false;
-            return true;
-        },
         debugTrackedEvent = function (category, action, label) {
-            if (!onlineOrStageEnvironment() && checkQueryString()) {
-                var messageText = "[EVENT] --------------------\nCategory: " +
-                        category +
-                        "\nAction: " +
-                        action +
-                        "\nLabel: " +
-                        label +
-                        "\n----------------------------",
-                    messageHtml = "Category:</b> " +
+            if (checkQueryString()) {
+                var messageHtml = "Category:</b> " +
                         category +
                         " <br /> <b>Action:</b> " +
                         action +
@@ -163,8 +148,6 @@
                         $(".track-event-notification-layer").removeClass("fade-in").addClass("fade-out").html("");
                     },
                     3000);
-
-                console.log(messageText);
             }
         };
 
@@ -609,4 +592,4 @@
             delay);
     };
 
-}(jQuery, window, document));
+}(jQuery, window));

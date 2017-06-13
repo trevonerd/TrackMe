@@ -1,17 +1,14 @@
 {
   "name": "TrackMe",
-  "version": "2.1.2",
-  "description": "Events tracking jQuery plugin.",
+  "version": "2.1.9",
+  "description": "Google Analytics events tracking jQuery plugin based on html data attributes.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "jshint-stylish": "^2.1.0"
+    "eslint": "^4.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint src/* || true"
   },
   "repository": {
     "type": "git",
